@@ -1,6 +1,4 @@
-# Full Stack API Final Project
-
-## Full Stack Trivia
+### Trivia API
 
 Udacity is invested in creating bonding experiences for its employees and students. A bunch of team members got the idea to hold trivia on a regular basis and created a  webpage to manage the trivia app and play the game, but their API experience is limited and still needs to be built out. 
 
@@ -42,3 +40,9 @@ The `./frontend` directory contains a complete React frontend to consume the dat
 Pay special attention to what data the frontend is expecting from each API response to help guide how you format your API. 
 
 [View the README.md within ./frontend for more details.](./frontend/README.md)
+
+## Udacity Information:
+This code was a project for the Full Stack Web Developer Nanodegree. Resource links are listed below:
+* [Full Stack Web Developer](https://www.udacity.com/course/intro-to-programming-nanodegree--nd000)
+* [Rubric](https://review.udacity.com/#!/rubrics/2634/view)
+* [Starter Code](https://github.com/udacity/FSND/tree/master/projects/02_trivia_api/starter)
