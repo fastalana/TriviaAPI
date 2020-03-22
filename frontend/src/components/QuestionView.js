@@ -32,7 +32,7 @@ class QuestionView extends Component {
           categories: result.categories,
           currentCategory: result.current_category 
         })
-        return;
+        return
       },
       error: error => {
         alert('Unable to load questions. Please try your request again')
@@ -42,7 +42,7 @@ class QuestionView extends Component {
   }
 
   selectPage(num) {
-    this.setState(page: num, () => this.getQuestions())
+    this.setState({ page: num }, () => this.getQuestions())
   }
 
   createPagination() {
@@ -115,8 +115,8 @@ class QuestionView extends Component {
         $.ajax({
           url: `/questions/${id}`, //TODO: update request URL
           type: 'DELETE',
-          success: (result) => {
-            this.getQuestions();
+          success: result => {
+            this.getQuestions()
           },
           error: error => {
             alert('Unable to load questions. Please try your request again')
@@ -129,8 +129,8 @@ class QuestionView extends Component {
 
   render() {
     return (
-      <div className="question-view">
-        <div className="categories-list">
+      <div className='question-view'>
+        <div className='categories-list'>
           <h2 
             onClick={() => {
               this.getQuestions()
@@ -168,9 +168,7 @@ class QuestionView extends Component {
               questionAction={this.questionAction(q.id)}
             />
           ))}
-          <div className='pagination-menu'>
-            {this.createPagination()}
-          </div>
+          <div className='pagination-menu'>{this.createPagination()}</div>
         </div>
 
       </div>
