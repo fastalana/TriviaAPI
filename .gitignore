@@ -40,3 +40,4 @@ Thumbs.db
 ######################
 *.pyc
 **/backend/env
+**/frontend/node_modules
