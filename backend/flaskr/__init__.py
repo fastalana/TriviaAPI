@@ -127,12 +127,31 @@ def create_app(test_config=None):
   # the form will clear and the question will appear at the end of the last page
   # of the questions list in the "List" tab.  
 
-
-
   # @TODO: 
   # Create a POST endpoint to get questions based on a search term. 
   # It should return any questions for whom the search term 
   # is a substring of the question. 
+  @app.route('/questions/searchpsql ', methods=['POST'])
+  def search_questions():
+    body = request.get_json()
+    search = body.get('search', None)
+
+    if search:
+      selection = Question.query.filter(Question.question.ilike('%{}%')).all()
+      # found_questions = paginate_questions(request, selection)
+
+      return jsonify({
+        'success': True,
+        'questions': [question.format() for question in selection],
+        'total found': len(selection.all())
+      })
+    abort(404)
+    # else: 
+    #   return jsonify({
+    #     'success': True,
+    #     'total found': 0
+    #   })
+
 
   # TEST: Search by any phrase. The questions list will update to include 
   # only question that include that string within their question. 
