@@ -129,10 +129,9 @@ _Deletes a question_
   "total_questions_remaining": 1
 }
 ```
-
-MORE
 #### POST /questions
 _Searches for a question OR creates a new question_
+
 **Search for a question**
 * _Sample Request:_ `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"search":"Who"}'`
 * _Sample Response:_
