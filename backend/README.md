@@ -70,10 +70,10 @@ Errors are returned in the following JSON format:
 There are error handlers for 400, 404, 422, and 500 errors.
 
 ### Endpoints
-#### GET /categories
-* _Retrieves all Categories_
-* `curl http://127.0.0.1:5000/categories`
-* Sample response:
+#### GET /categories, _Retrieves all Categories_
+
+**Sample:**
+`curl http://127.0.0.1:5000/categories`
 ```
 {
   "category": [
