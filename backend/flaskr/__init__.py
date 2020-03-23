@@ -36,25 +36,23 @@ def create_app(test_config=None):
   # Creates an endpoint to handle GET requests for all available categories.
   @app.route('/categories')
   def retrieve_categories():
-    categories = list(map(Category.format, Category.query.all()))
+    categories = Category.query.order_by(Category.id).all()
 
     if len(categories) == 0:
       abort(404)
 
     return jsonify({
         'success': True,
-        'category': categories,
-        'total_categories': len(Category.query.all())
+        'category': [category.format() for category in categories],
+        'total_categories': len(categories)
       })
 
   # Creates an endpoint to handle GET requests for questions, with pagination (every 10 questions). 
-  # This endpoint should return a list of questions, number of total questions, current category, categories. 
+  # This endpoint should return a list of questions, number of total questions. 
   @app.route('/questions')
   def retrieve_questions():
     selection = Question.query.order_by(Question.id).all()
     current_questions = paginate_questions(request, selection)
-
-    # categories = list(map(Category.format, Category.query.all()))
 
     if len(current_questions) == 0:
       abort(404)
@@ -62,9 +60,7 @@ def create_app(test_config=None):
     return jsonify({
       'success': True,
       'question': current_questions,
-      'total_questions': len(Question.query.all()),
-      # 'current category': None,
-      # 'categories': categories
+      'total_questions': len(selection)
       })
 
   # TEST: At this point, when you start the application
@@ -82,9 +78,6 @@ def create_app(test_config=None):
         abort(404)
 
       question.delete()
-
-      selection = Question.query.order_by(Question.id).all()
-      current_questions = paginate_questions(request, selection)
       
       return jsonify({
         'success': True,
@@ -116,12 +109,12 @@ def create_app(test_config=None):
     try:
       if search:
         selection = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(search)))
-        current_questions = paginate_questions(request, selection)
+        searched_questions = paginate_questions(request, selection)
 
         return jsonify({
           'success': True,
-          'questions': current_questions,
-          'total_questions_in_search': len(current_questions)
+          'questions': searched_questions,
+          'total_questions_in_search': len(searched_questions)
         })
       else:
         question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
