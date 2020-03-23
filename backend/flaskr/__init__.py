@@ -44,17 +44,17 @@ def create_app(test_config=None):
     return jsonify({
         'success': True,
         'category': categories,
-        'total categories': len(Category.query.all())
+        'total_categories': len(Category.query.all())
       })
 
-  # Creates an endpoint to handle GET requests for questionsm, with pagination (every 10 questions). 
+  # Creates an endpoint to handle GET requests for questions, with pagination (every 10 questions). 
   # This endpoint should return a list of questions, number of total questions, current category, categories. 
   @app.route('/questions')
   def retrieve_questions():
     selection = Question.query.order_by(Question.id).all()
     current_questions = paginate_questions(request, selection)
 
-    categories = list(map(Category.format, Category.query.all()))
+    # categories = list(map(Category.format, Category.query.all()))
 
     if len(current_questions) == 0:
       abort(404)
@@ -62,9 +62,9 @@ def create_app(test_config=None):
     return jsonify({
       'success': True,
       'question': current_questions,
-      'total questions': len(Question.query.all()),
-      'current category': None,
-      'categories': categories
+      'total_questions': len(Question.query.all()),
+      # 'current category': None,
+      # 'categories': categories
       })
 
   # TEST: At this point, when you start the application
@@ -88,9 +88,8 @@ def create_app(test_config=None):
       
       return jsonify({
         'success': True,
-        # 'questions': current_questions,
-        'deleted': question_id,
-        'total_questions': len(Question.query.all())
+        'deleted_question_id': question_id,
+        'total_questions_remaining': len(Question.query.all())
       })
 
     except:
@@ -122,7 +121,7 @@ def create_app(test_config=None):
         return jsonify({
           'success': True,
           'questions': current_questions,
-          'total_questions': len(current_questions)
+          'total_questions_in_search': len(current_questions)
         })
       else:
         question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
@@ -157,7 +156,7 @@ def create_app(test_config=None):
         'success': True,
         'questions': [question.format() for question in questions],
         'category': category_id,
-        'total_questions': len(questions)
+        'total_questions_in_category': len(questions)
       })
 
     except:
