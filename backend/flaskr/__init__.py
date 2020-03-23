@@ -33,7 +33,7 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     return response
  
-  # Create an endpoint to handle GET requests for all available categories.
+  # Creates an endpoint to handle GET requests for all available categories.
   @app.route('/categories')
   def retrieve_categories():
     categories = list(map(Category.format, Category.query.all()))
@@ -47,7 +47,7 @@ def create_app(test_config=None):
         'total categories': len(Category.query.all())
       })
 
-  # Create an endpoint to handle GET requests for questionsm, with pagination (every 10 questions). 
+  # Creates an endpoint to handle GET requests for questionsm, with pagination (every 10 questions). 
   # This endpoint should return a list of questions, number of total questions, current category, categories. 
   @app.route('/questions')
   def retrieve_questions():
@@ -72,10 +72,7 @@ def create_app(test_config=None):
   # ten questions per page and pagination at the bottom of the screen for three pages.
   # Clicking on the page numbers should update the questions. 
 
-
-
-  # @TODO: 
-  # Create an endpoint to DELETE question using a question ID. 
+  # Creates an endpoint to DELETE question using a question ID. 
   @app.route('/questions/<int:question_id>', methods=['DELETE'])
   def delete_question(question_id):
     try:
@@ -101,12 +98,45 @@ def create_app(test_config=None):
 
   # TEST: When you click the trash icon next to a question, the question will be removed.
   # This removal will persist in the database and when you refresh the page. 
- 
-  # @TODO: 
-  # Create an endpoint to POST a new question, 
-  # which will require the question and answer text, 
-  # category, and difficulty score.
 
+  # @TODO: 
+  # Creates an endpoint to POST a new question, which will require the question and answer text, 
+  # category, and difficulty score.
+  @app.route('/questions', methods=['POST'])
+  def create_question():
+    body = request.get_json()
+
+    new_question = body.get('question', None)
+    new_answer = body.get('answer', None)
+    new_category = body.get('category', None)
+    new_difficulty = body.get('difficulty', None)
+    search = body.get('search', None)
+
+    try:
+      if search:
+        selection = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(search)))
+        current_questions = paginate_questions(request, selection)
+
+        return jsonify({
+          'success': True,
+          'questions': current_questions,
+          'total_questions': len(Question.query.all())
+        })
+      else:
+        question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
+        # question = Question(question=new_question)
+        question.insert()
+
+        selection = Question.query.order_by(Question.id).all()
+        current_questions = paginate_questions(request, selection)
+
+        return jsonify({
+          'success': True,
+          'created': question.id,
+          'total_questions': len(Question.query.all())
+        })
+    except:
+      abort(422)
   # TEST: When you submit a question on the "Add" tab, 
   # the form will clear and the question will appear at the end of the last page
   # of the questions list in the "List" tab.  
