@@ -143,9 +143,25 @@ def create_app(test_config=None):
   # TEST: Search by any phrase. The questions list will update to include 
   # only question that include that string within their question. 
   # Try using the word "title" to start. 
+ 
+  # Creates a GET endpoint to get questions based on category.
+  @app.route('/categories/<int:category_id>/questions')
+  def retrieve_questions_from_category(category_id):
+    try:
+      questions = Question.query.filter(Question.category == category_id).all()
 
-  # @TODO: 
-  # Create a GET endpoint to get questions based on category. 
+      if questions is None:
+        abort(404)
+      
+      return jsonify({
+        'success': True,
+        'questions': [question.format() for question in questions],
+        'category': category_id,
+        'total_questions': len(questions)
+      })
+
+    except:
+      abort(422)
 
   # TEST: In the "List" tab / main screen, clicking on one of the 
   # categories in the left column will cause only questions of that 
