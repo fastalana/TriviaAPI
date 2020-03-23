@@ -91,6 +91,45 @@ _Retrieves all Categories_
 }
 ```
 
+#### GET /questions
+_Retrieves all Questions_
+* _Sample Request:_ `curl http://127.0.0.1:5000/questions`
+* _Sample Response:_
+```
+{
+  "question": [
+    {
+      "answer": "Maya Angelou", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 5, 
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }, 
+    {
+      "answer": "Muhammad Ali", 
+      "category": 4, 
+      "difficulty": 1, 
+      "id": 9, 
+      "question": "What boxer's original name is Cassius Clay?"
+    }
+  ],
+  "success": true, 
+  "total_questions": 24
+}
+```
+
+#### DELETE /questions/<int:question_id>
+_Deletes a question_
+* _Sample Request:_ `curl -X DELETE http://127.0.0.1:5000/questions/9`
+* _Sample Response:_
+```
+{
+  "deleted_question_id": 9, 
+  "success": true, 
+  "total_questions_remaining": 1
+}
+```
+
 ## Testing
 To run the tests, run
 ```
