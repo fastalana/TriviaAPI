@@ -59,7 +59,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 * Authentication: Authentication or API keys are not used in the project yet.
 
 ### Error Handling
-Error are returned in the following JSON format:
+Errors are returned in the following JSON format:
 ```
     {
         'success': False,
@@ -70,7 +70,26 @@ Error are returned in the following JSON format:
 There are error handlers for 400, 404, 422, and 500 errors.
 
 ### Endpoints
-
+**GET /categories**
+Retrieves all Categories
+`curl http://127.0.0.1:5000/categories`
+Sample response:
+```
+{
+  "category": [
+    {
+      "id": 1, 
+      "type": "Science"
+    }, 
+    {
+      "id": 2, 
+      "type": "Art"
+    }
+  ], 
+  "success": true, 
+  "total_categories": 2
+}
+```
 
 ## Testing
 To run the tests, run
