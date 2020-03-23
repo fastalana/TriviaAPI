@@ -71,8 +71,11 @@ There are error handlers for 400, 404, 422, and 500 errors.
 
 ### Endpoints
 **GET /categories**
+
 Retrieves all Categories
+
 `curl http://127.0.0.1:5000/categories`
+
 Sample response:
 ```
 {
