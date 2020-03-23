@@ -164,32 +164,39 @@ def create_app(test_config=None):
   # This endpoint takes a category and the previous question parameters 
   # and returns a random question within the given category,
   # if provided, and that is not one of the previous questions. 
-  # @app.route('/quizzes', methods=['POST'])
-  # def play_game():
-  #   try:
-  #     body = request.get_json()
+  @app.route('/quizzes', methods=['POST'])
+  def play_quiz_question():
+    body = request.get_json()
+    previous_questions = body.get('previous_questions')
+    quiz_category = body.get('quiz_category')
 
-  #     if 'quiz_category' not in body and 'previous_questions' not in body:
-  #       abort(422)
+    if ((quiz_category is None) or (previous_questions is None)):
+      abort(422)
+
+    if (quiz_category['id'] == 0):
+      questions = Question.query.all()
+    else:
+      questions = Question.query.filter_by(category=quiz_category['id']).all()
       
-  #     category = body.get('quiz_category')
-  #     questions = body.get('previous_questions')
+      def get_random_question():
+        return questions[random.randint(0, len(questions)-1)]
 
-  #     if category['type'] == 'click':
-  #       available_questions = Question.query.filter(Question.id.notin_(questions)).all()
-      
-  #     else:
-  #       available_questions = Question.query.filter_by(category=category['id']).filter(Question.id.notin_((questions))).all()
-        
-  #     new_question = available_questions[random.randrange(0, len(available_questions))].format() if len(available_questions) > 0 else None
+      next_question = get_random_question()
 
-  #     return jsonify({
-  #       'success': True,
-  #       'question': new_question
-  #     })
+      # Boolean value that checks to see if the question is a previous question
+      found = False
 
-  #   except:
-  #     abort(422)
+      while found:
+        if next_question.id in previous_questions:
+          next_question = get_random_question()
+          # previous_questions.append(next_question.id) #Could I do something here to make sure the new question doesn't get repeated?
+        else:
+          found = True
+
+      return jsonify({
+        'success': True,
+        'question': next_question.format(),
+      })
 
   # TEST: In the "Play" tab, after a user selects "All" or a category,
   # one question at a time is displayed, the user is allowed to answer
