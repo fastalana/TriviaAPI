@@ -48,7 +48,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['question'])
         self.assertEqual(len(data['question']), 10)
-        # self.assertEqual(data['total_questions'], 19)
+        self.assertEqual(data['total_questions'], 20)
 
     def test_error_for_invalid_questions_page(self):
         response = self.client().get('/questions?page=100000')
@@ -64,7 +64,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
-    #     self.assertEqual(data['total_questions_remaining'], 19)
+        self.assertEqual(data['total_questions_remaining'], 19)
 
     def test_error_question_delete_id_does_not_exist(self):
         response = self.client().delete('/questions/456789')
@@ -96,12 +96,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['created'])
-        # self.assertEqual(data['total_questions'], 19)
+        self.assertEqual(data['total_questions'], 20)
 
     def test_error_create_question_with_missing_data(self):
         dummy_data = {
             'difficulty': 1,
             'category': 1
+            # missing question and answer 
         }
 
         response = self.client().post('/questions', json=dummy_data)
@@ -122,12 +123,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['questions'])
-        # self.assertEqual(data['total_questions_in_search'], 3)
+        self.assertEqual(data['total_questions_in_search'], 3)
 
     def test_error_search_question_with_no_search(self):
         dummy_data = {
             'difficulty': 1,
             'category': 1
+            # missing search
         }
 
         response = self.client().post('/questions', json=dummy_data)
@@ -136,12 +138,60 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'unprocessable')
-        
-    # def test_get_questions_by_catgeory(self):
+
+    def test_get_questions_by_catgeory(self):
+        response = self.client().get('/categories/1/questions')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['category'])
+        self.assertEqual(data['total_questions_in_category'], 4)
+
     # def test_error_get_questions_by_category_id_does_not_exist(self):
-    # def test_error_get_questions_by_category_invalid_id(self):
-    # def test_quiz_question(self):
-    # def test_error_quiz_question_with_no_data(self):
+    #     response = self.client().get('/categories/100000/questions')
+    #     data = json.loads(response.data)
+
+    #     self.assertEqual(response.status_code, 422)
+    #     self.assertEqual(data['success'], False)
+    #     self.assertEqual(data['message'], 'unprocessable')
+
+    def test_error_get_questions_by_category_invalid_id(self):
+        response = self.client().get('/categories/CATSPAJAMAS/questions')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
+    def test_quiz_question(self):
+        dummy_data = {
+            'previous_questions': '[5, 9]',
+            'quiz_category': {
+                "type": "Sport", 
+                "id": "6"
+            }
+        }
+
+        response = self.client().post('/quizzes', json=dummy_data)
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question'])
+
+    def test_error_quiz_question_with_no_data(self):
+        dummy_data = {
+            'previous_questions': '[5, 9]'
+            # missing quiz_category
+        }
+
+        response = self.client().post('/questions', json=dummy_data)
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
