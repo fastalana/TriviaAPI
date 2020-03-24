@@ -98,9 +98,45 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['created'])
         # self.assertEqual(data['total_questions'], 19)
 
-    # def test_error_create_question_with_missing_data(self):
-    # def test_search_question(self):
-    # def test_error_search_question_with_no_search(self):
+    def test_error_create_question_with_missing_data(self):
+        dummy_data = {
+            'difficulty': 1,
+            'category': 1
+        }
+
+        response = self.client().post('/questions', json=dummy_data)
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
+
+    def test_search_question(self):
+        dummy_data = {
+            'search': 'Who'
+        }
+
+        response = self.client().post('/questions', json=dummy_data)
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        # self.assertEqual(data['total_questions_in_search'], 3)
+
+    def test_error_search_question_with_no_search(self):
+        dummy_data = {
+            'difficulty': 1,
+            'category': 1
+        }
+
+        response = self.client().post('/questions', json=dummy_data)
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
+        
     # def test_get_questions_by_catgeory(self):
     # def test_error_get_questions_by_category_id_does_not_exist(self):
     # def test_error_get_questions_by_category_invalid_id(self):
