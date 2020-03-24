@@ -48,7 +48,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['question'])
         self.assertEqual(len(data['question']), 10)
-        self.assertEqual(data['total_questions'], 19)
+        # self.assertEqual(data['total_questions'], 19)
 
     def test_error_for_invalid_questions_page(self):
         response = self.client().get('/questions?page=100000')
@@ -58,10 +58,46 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
 
-    # def test_question_delete(self):
-    # def test_error_question_delete_id_does_not_exist(self):
-    # def test_error_question_delete_invalid_id(self):
-    # def test_create_question(self):
+    def test_question_delete(self):
+        response = self.client().delete('/questions/4')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+    #     self.assertEqual(data['total_questions_remaining'], 19)
+
+    def test_error_question_delete_id_does_not_exist(self):
+        response = self.client().delete('/questions/456789')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')       
+
+    def test_error_question_delete_invalid_id(self):
+        response = self.client().delete('/questions/CATSPAJAMAS')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found') 
+
+    def test_create_question(self):
+        dummy_data = {
+            'question': 'TEST QUESTION',
+            'answer': 'TEST ANSWER',
+            'difficulty': 1,
+            'category': 1
+        }
+
+        response = self.client().post('/questions', json=dummy_data)
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['created'])
+        # self.assertEqual(data['total_questions'], 19)
+
     # def test_error_create_question_with_missing_data(self):
     # def test_search_question(self):
     # def test_error_search_question_with_no_search(self):
